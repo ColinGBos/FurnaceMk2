@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "furnacemk2:item/experience_crystal_alt"
+  }
+}

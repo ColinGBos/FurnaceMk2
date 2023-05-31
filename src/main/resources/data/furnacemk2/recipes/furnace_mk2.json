@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#B#",
+    "CGC",
+    "CFC"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:smooth_stone"
+    },
+    "B": {
+      "item": "minecraft:blast_furnace"
+    },
+    "C": {
+      "tag": "minecraft:stone_tool_materials"
+    },
+    "G": {
+      "item": "minecraft:glass_bottle"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    }
+  },
+  "result": {
+    "item": "furnacemk2:furnacemk2",
+    "count": 1
+  }
+}

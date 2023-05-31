@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#C#",
+    "WWW",
+    "#C#"
+  ],
+  "key": {
+    "#": {
+      "tag": "minecraft:sand"
+    },
+    "C": {
+      "item": "minecraft:clay"
+    },
+    "W": {
+      "item": "minecraft:white_concrete"
+    }
+  },
+  "result": {
+    "item": "furnacemk2:insulation_core",
+    "count": 1
+  }
+}
