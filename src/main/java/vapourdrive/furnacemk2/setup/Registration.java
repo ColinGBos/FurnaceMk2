@@ -1,20 +1,20 @@
 package vapourdrive.furnacemk2.setup;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import vapourdrive.furnacemk2.furnace.*;
 import vapourdrive.furnacemk2.items.ItemCrystal;
 import vapourdrive.furnacemk2.items.ItemFurnaceCore;
+import vapourdrive.vapourware.setup.ModSetup;
 
 import static vapourdrive.furnacemk2.FurnaceMk2.MODID;
 
@@ -32,7 +32,7 @@ public class Registration {
     }
 
     public static final RegistryObject<FurnaceMk2Block> FURNACEMK2_BLOCK = BLOCKS.register("furnacemk2", FurnaceMk2Block::new);
-    public static final RegistryObject<Item> FURNACEMK2_ITEM = ITEMS.register("furnacemk2", () -> new FurnaceMk2Item(FURNACEMK2_BLOCK.get(), new Item.Properties().tab(ModSetup.ITEM_GROUP)));
+    public static final RegistryObject<Item> FURNACEMK2_ITEM = ITEMS.register("furnacemk2", () -> new FurnaceMk2Item(FURNACEMK2_BLOCK.get(), new Item.Properties().tab(ModSetup.VAPOUR_GROUP)));
     public static final RegistryObject<BlockEntityType<FurnaceMk2Tile>> FURNACEMK2_TILE = TILES.register("furnacemk2", () -> BlockEntityType.Builder.of(FurnaceMk2Tile::new, FURNACEMK2_BLOCK.get()).build(null));
 
     public static final RegistryObject<MenuType<FurnaceMk2Container>> FURNACEMK2_CONTAINER = CONTAINERS.register("furnacemk2", () -> IForgeMenuType.create((windowId, inv, data) -> {
@@ -41,9 +41,9 @@ public class Registration {
         return new FurnaceMk2Container(windowId, world, pos, inv, inv.player, new FurnaceData());
     }));
 
-    public static final RegistryObject<ItemFurnaceCore> EXPERIENCE_CORE_ITEM = ITEMS.register("experience_core", () -> new ItemFurnaceCore("experience"));
-    public static final RegistryObject<ItemFurnaceCore> INSULATION_CORE_ITEM = ITEMS.register("insulation_core", () -> new ItemFurnaceCore("efficiency"));
-    public static final RegistryObject<ItemFurnaceCore> THERMAL_CORE_ITEM = ITEMS.register("thermal_core", () -> new ItemFurnaceCore("speed"));
-    public static final RegistryObject<ItemCrystal> CRYSTAL_GEM_ITEM = ITEMS.register("crystal_gem_item", ItemCrystal::new);
+    public static final RegistryObject<Item> EXPERIENCE_CORE_ITEM = ITEMS.register("experience_core", () -> new ItemFurnaceCore("experience"));
+    public static final RegistryObject<Item> INSULATION_CORE_ITEM = ITEMS.register("insulation_core", () -> new ItemFurnaceCore("efficiency"));
+    public static final RegistryObject<Item> THERMAL_CORE_ITEM = ITEMS.register("thermal_core", () -> new ItemFurnaceCore("speed"));
+    public static final RegistryObject<Item> CRYSTAL_GEM_ITEM = ITEMS.register("crystal_gem_item", ItemCrystal::new);
 
 }

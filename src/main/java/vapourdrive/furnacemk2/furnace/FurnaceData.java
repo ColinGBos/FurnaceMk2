@@ -3,41 +3,41 @@ package vapourdrive.furnacemk2.furnace;
 import net.minecraft.world.inventory.ContainerData;
 
 public class FurnaceData implements ContainerData {
+    public enum Data {
+        FUEL,
+        COOK_PROGRESS,
+        COOK_MAX,
+        EXPERIENCE
+    }
 
-    public int experience;
+    private final int[] data = {0, 0, 0, 0};
 
-    public int cookProgress;
-    public int cookMax;
-    public int fuel;
+    public int get(Data data) {
+        return this.get(data.ordinal());
+    }
 
     @Override
     public int get(int index) {
-//        FurnaceMk2.debugLog(String.format("BP: %s", this.burnProgress));
-//        FurnaceMk2.debugLog(String.format("CMB: %s", this.currentMaxBurn));
-//        FurnaceMk2.debugLog(String.format("CP: %s", this.cookProgress));
-//        FurnaceMk2.debugLog(String.format("EXP: %s", this.experience));
-//        FurnaceMk2.debugLog(String.format("CM: %s", this.cookMax));
-        return switch (index) {
-            case 0 -> this.cookProgress;
-            case 1 -> this.cookMax;
-            case 2 -> this.experience;
-            case 3 -> this.fuel;
-            default -> 0;
-        };
+        if (index >= data.length || index < 0) {
+            return 0;
+        } else {
+            return data[index];
+        }
+    }
+
+    public void set(Data data, int value) {
+        this.set(data.ordinal(), value);
     }
 
     @Override
     public void set(int index, int value) {
-        switch (index) {
-            case 0 -> this.cookProgress = value;
-            case 1 -> this.cookMax = value;
-            case 2 -> this.experience = value;
-            case 3 -> this.fuel = value;
+        if (index < data.length && index >= 0) {
+            data[index] = value;
         }
     }
 
     @Override
     public int getCount() {
-        return 4;
+        return data.length;
     }
 }

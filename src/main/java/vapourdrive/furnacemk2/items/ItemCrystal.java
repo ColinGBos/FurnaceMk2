@@ -1,35 +1,35 @@
 package vapourdrive.furnacemk2.items;
 
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.util.*;
-import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.config.ConfigSettings;
-import vapourdrive.furnacemk2.setup.ModSetup;
 import vapourdrive.furnacemk2.utils.ExperienceUtils;
+import vapourdrive.vapourware.setup.ModSetup;
 
 import java.text.DecimalFormat;
 import java.util.List;
-
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 
 public class ItemCrystal extends Item implements IExperienceStorage{
     public static final String TAG_EXPERIENCE = "FurnaceMK2.Crystal.Experience";
 
     public ItemCrystal() {
-        super(new Item.Properties().stacksTo(1).tab(ModSetup.ITEM_GROUP));
+        super(new Item.Properties().stacksTo(1).tab(ModSetup.VAPOUR_GROUP));
     }
 
     @Override
@@ -38,9 +38,8 @@ public class ItemCrystal extends Item implements IExperienceStorage{
         int storedXP = getCurrentExperienceStored(stack);
 
         if(player.isShiftKeyDown() && storedXP < getMaxExperienceStored(stack)) {
-            int xpToStore = 0;
             int xpForCurrentLevel = ExperienceUtils.getExperienceForLevel(player.experienceLevel);
-            xpToStore = ExperienceUtils.getPlayerXP(player) - xpForCurrentLevel;
+            int xpToStore = ExperienceUtils.getPlayerXP(player) - xpForCurrentLevel;
 
             //player has exactly x > 0 levels (xp bar looks empty)
             if(xpToStore == 0 && player.experienceLevel > 0) {
@@ -68,12 +67,12 @@ public class ItemCrystal extends Item implements IExperienceStorage{
             int xpForPlayer = ExperienceUtils.getExperienceForLevel(player.experienceLevel + 1) - ExperienceUtils.getPlayerXP(player);
             //if retrievalPercentage is 75%, these 75% should be given to the player, but an extra 25% needs to be removed from the tome
             //using floor to be generous towards the player, removing slightly less xp than should be removed (can't be 100% accurate, because XP is saved as an int)
-            int xpToRetrieve = (int)Math.floor(xpForPlayer);
+            int xpToRetrieve = (int) (double) xpForPlayer;
             int actuallyRemoved = extractExperience(stack, xpToRetrieve, false);
 
             //if the tome had less xp than the player should get, apply the XP loss to that value as well
             if(actuallyRemoved < xpForPlayer) {
-                xpForPlayer = (int) Math.floor(actuallyRemoved);
+                xpForPlayer = (int) (double) actuallyRemoved;
             }
 
             ExperienceUtils.addPlayerXP(player, xpForPlayer);

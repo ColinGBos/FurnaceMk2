@@ -51,3 +51,10 @@ Might support the other vanilla 'furnace-like' blocks in the future.
     # Side this dependency is applied on - BOTH, CLIENT or SERVER
     side="BOTH"
 
+[[dependencies.furnacemk2]]
+modId = "vapourware"
+mandatory = true
+versionRange = "[0.1.4,)"
+ordering = "AFTER"
+side = "BOTH"
+

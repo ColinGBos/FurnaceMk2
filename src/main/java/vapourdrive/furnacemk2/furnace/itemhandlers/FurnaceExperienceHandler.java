@@ -1,11 +1,10 @@
 package vapourdrive.furnacemk2.furnace.itemhandlers;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import vapourdrive.furnacemk2.furnace.FurnaceMk2Tile;
 import vapourdrive.furnacemk2.items.IExperienceStorage;
-import vapourdrive.furnacemk2.setup.Registration;
 
 import javax.annotation.Nonnull;
 
