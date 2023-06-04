@@ -168,7 +168,7 @@ public class FurnaceMk2Container extends AbstractBaseMachineContainer {
         if (i == 0) {
             return 0;
         }
-        return (float) i / (float) tileEntity.getMaxExp();
+        return (float) i / (float) FurnaceMk2Tile.getMaxExp();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -177,6 +177,6 @@ public class FurnaceMk2Container extends AbstractBaseMachineContainer {
     }
 
     public int getMaxExp() {
-        return tileEntity.getMaxExp();
+        return FurnaceMk2Tile.getMaxExp();
     }
 }

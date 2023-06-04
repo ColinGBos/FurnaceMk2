@@ -1,6 +1,7 @@
 package vapourdrive.furnacemk2.furnace;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -78,6 +79,14 @@ public class FurnaceMk2Block extends AbstractBaseMachineBlock implements EntityB
             }
             super.onRemove(state, world, blockPos, newState, isMoving);
         }
+    }
+
+    @Override
+    protected CompoundTag putAdditionalInfo(CompoundTag tag, BlockEntity blockEntity) {
+        if(blockEntity instanceof FurnaceMk2Tile machine){
+            tag.putInt("furnacemk2.exp", machine.getCurrentExp());
+        }
+        return tag;
     }
 
 }

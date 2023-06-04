@@ -54,7 +54,7 @@ Might support the other vanilla 'furnace-like' blocks in the future.
 [[dependencies.furnacemk2]]
 modId = "vapourware"
 mandatory = true
-versionRange = "[0.1.4,)"
+versionRange = "[0.1.6,)"
 ordering = "AFTER"
 side = "BOTH"
 

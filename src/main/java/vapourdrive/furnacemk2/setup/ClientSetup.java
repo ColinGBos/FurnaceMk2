@@ -11,16 +11,6 @@ import vapourdrive.furnacemk2.furnace.FurnaceMk2Screen;
 public class ClientSetup {
 
     public static void setup(final FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            MenuScreens.register(Registration.FURNACEMK2_CONTAINER.get(), FurnaceMk2Screen::new);
-        });
+        event.enqueueWork(() -> MenuScreens.register(Registration.FURNACEMK2_CONTAINER.get(), FurnaceMk2Screen::new));
     }
-
-//    @SubscribeEvent
-//    public void onTooltipPre(RenderTooltipEvent.GatherComponents event) {
-//        Item item = event.getItemStack().getItem();
-//        if (item.getRegistryName().getNamespace().equals(FurnaceMk2.MODID)) {
-//            event.setMaxWidth(200);
-//        }
-//    }
 }

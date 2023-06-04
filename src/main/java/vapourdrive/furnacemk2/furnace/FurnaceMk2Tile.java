@@ -15,7 +15,9 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.FurnaceMk2;
 import vapourdrive.furnacemk2.config.ConfigSettings;
-import vapourdrive.furnacemk2.furnace.itemhandlers.*;
+import vapourdrive.furnacemk2.furnace.itemhandlers.FurnaceAugmentHandler;
+import vapourdrive.furnacemk2.furnace.itemhandlers.FurnaceExperienceHandler;
+import vapourdrive.furnacemk2.furnace.itemhandlers.FurnaceIngredientHandler;
 import vapourdrive.furnacemk2.items.IExperienceStorage;
 import vapourdrive.furnacemk2.utils.FurnaceUtils;
 import vapourdrive.vapourware.shared.base.AbstractBaseFuelUserTile;
@@ -42,7 +44,7 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
 
     private ItemStack lastSmelting = ItemStack.EMPTY;
 
-    public final int maxExp = 50000;
+    public final static int maxExp = 50000;
     public int wait = 20;
     private ItemStack currentResult = ItemStack.EMPTY;
     private ItemStack currentIngredient = ItemStack.EMPTY;
@@ -224,8 +226,12 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
         return getStackInSlot(MachineUtils.Area.AUGMENT, 2).isEmpty() ? ConfigSettings.FURNACE_BASE_EXPERIENCE.get() : ConfigSettings.FURNACE_UPGRADED_EXPERIENCE.get()*ConfigSettings.FURNACE_BASE_EXPERIENCE.get();
     }
 
-    public int getMaxExp() {
-        return this.maxExp;
+    public int getCurrentExp() {
+        return furnaceData.get(FurnaceData.Data.EXPERIENCE);
+    }
+
+    public static int getMaxExp() {
+        return maxExp;
     }
 
     @Override

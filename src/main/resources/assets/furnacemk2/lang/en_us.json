@@ -14,9 +14,8 @@
   "message.crystal_gem_item.1": "Right-Click = Crystal->Player",
   "message.crystal_gem_item.2": "Sneak-Right-Click = Player->Crystal",
   "message.crystal_gem_item.3": "Exp: ",
-  "furnacemk2.upgradeslot": "Upgrade Slot",
+  "furnacemk2.upgradeslot": "Upgrade Slot: %s",
   "furnacemk2.experienceslot": "Experience Crystal Slot",
-
   "furnacemk2.config.furnaceBaseExperience": "Furnace Base Experience",
   "furnacemk2.config.furnaceBaseEfficiency": "Furnace Base Efficiency",
   "furnacemk2.config.furnaceBaseSpeed": "Furnace Base Speed",
@@ -25,5 +24,5 @@
   "furnacemk2.config.furnaceUpgradedSpeed": "Augmented Furnace Speed",
   "furnacemk2.config.crystalExperienceStorage": "Attuned Crystal XP Storage",
   "furnacemk2.config.title": "FurnaceMk2 Config Settings",
-  "furnacemk2.furnacemk2.info": "Fuel-powered and upgradable furnace that manages fuel reserves, experience, and some extra output capacity.\nWill consume fuel that exceeds the fuel storage only when the fuel level is lower than one unit of work (potentially wasteful with very high value modded fuels)."
+  "furnacemk2.furnacemk2.info": "Fuel-powered and upgradable furnace that manages fuel reserves, experience, and some extra output capacity."
 }

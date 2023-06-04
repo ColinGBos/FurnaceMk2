@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.FurnaceMk2;
 import vapourdrive.vapourware.shared.base.AbstractBaseMachineScreen;
+import vapourdrive.vapourware.shared.utils.DeferredComponent;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,10 +29,10 @@ public class FurnaceMk2Screen extends AbstractBaseMachineScreen<FurnaceMk2Contai
     final static  int EXP_HEIGHT = 10;
     final static  int EXP_WIDTH = 49;
 
-    DecimalFormat df = new DecimalFormat("#,###");
+    DecimalFormat exp_f = new DecimalFormat("#,###.##");
 
     public FurnaceMk2Screen(FurnaceMk2Container container, Inventory inv, Component name) {
-        super(container, inv, name, FurnaceMk2.MODID, "furnacemk2", 33, 17, 52, 158, 6, 1, true);
+        super(container, inv, name, new DeferredComponent(FurnaceMk2.MODID, "furnacemk2"), 33, 17, 52, 158, 6, 1, true);
         this.container = container;
     }
 
@@ -66,7 +67,7 @@ public class FurnaceMk2Screen extends AbstractBaseMachineScreen<FurnaceMk2Contai
         // If the mouse is over the experience bar, add hovering text
         if (notCarrying && isInRect(this.leftPos + EXP_XPOS, this.topPos + EXP_YPOS, EXP_WIDTH, EXP_HEIGHT, mouseX, mouseY)){
             float experience = (float)container.getExperienceStored()/100.0f;
-            hoveringText.add(Component.literal("Exp: ").append(df.format(experience)+"/"+df.format(container.getMaxExp()/100)));
+            hoveringText.add(Component.literal("Exp: ").append(exp_f.format(experience)+"/"+exp_f.format(container.getMaxExp()/100)));
         }
 
         // If hoveringText is not empty draw the hovering text.  Otherwise, use vanilla to render tooltip for the slots
@@ -78,7 +79,7 @@ public class FurnaceMk2Screen extends AbstractBaseMachineScreen<FurnaceMk2Contai
     @Override
     protected void getAdditionalInfoHover(List<Component> hoveringText) {
         super.getAdditionalInfoHover(hoveringText);
-        hoveringText.add(Component.translatable(this.modID+this.ID+".wrench").withStyle(ChatFormatting.GOLD));
+        hoveringText.add(Component.translatable(comp.getMod()+comp.getTail()+".wrench").withStyle(ChatFormatting.GOLD));
     }
 
 }
