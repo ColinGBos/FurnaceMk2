@@ -2,17 +2,21 @@ package vapourdrive.furnacemk2.furnace;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vapourdrive.furnacemk2.FurnaceMk2;
 import vapourdrive.furnacemk2.config.ConfigSettings;
 import vapourdrive.furnacemk2.furnace.itemhandlers.FurnaceAugmentHandler;
@@ -26,21 +30,18 @@ import vapourdrive.vapourware.shared.base.itemhandlers.OutputHandler;
 import vapourdrive.vapourware.shared.utils.MachineUtils;
 import vapourdrive.vapourware.shared.utils.MachineUtils.Area;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import static vapourdrive.furnacemk2.setup.Registration.FURNACEMK2_TILE;
 
-public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
+public class FurnaceMk2Tile extends AbstractBaseFuelUserTile implements MenuProvider {
 
     private final FurnaceAugmentHandler augmentHandler = new FurnaceAugmentHandler(this, AUGMENT_SLOTS.length);
     private final FuelHandler fuelHandler = new FuelHandler(this, FUEL_SLOT.length);
     private final FurnaceIngredientHandler ingredientHandler = new FurnaceIngredientHandler(this, INPUT_SLOT.length);
     private final FurnaceExperienceHandler experienceHandler = new FurnaceExperienceHandler(this, EXPERIENCE_OUTPUT_SLOTS.length);
     private final OutputHandler outputHandler = new OutputHandler(this, OUTPUT_SLOTS.length);
-    private final LazyOptional<OutputHandler> lazyOutputHandler = LazyOptional.of(() -> outputHandler);
+//    private final LazyOptional<OutputHandler> lazyOutputHandler = LazyOptional.of(() -> outputHandler);
     private final CombinedInvWrapper combined = new CombinedInvWrapper(augmentHandler, fuelHandler, ingredientHandler, outputHandler, experienceHandler);
-    private final LazyOptional<CombinedInvWrapper> combinedHandler = LazyOptional.of(() -> combined);
+//    private final LazyOptional<CombinedInvWrapper> combinedHandler = LazyOptional.of(() -> combined);
 
     private ItemStack lastSmelting = ItemStack.EMPTY;
 
@@ -65,7 +66,7 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
         ItemStack ingredient = getStackInSlot(Area.INGREDIENT_1, 0);
 
         //Reset the cook progress if it's a new item
-        if (!lastSmelting.isEmpty() && !ItemStack.isSame(ingredient, lastSmelting)) {
+        if (!lastSmelting.isEmpty() && !ItemStack.isSameItemSameComponents(ingredient, lastSmelting)) {
             furnaceData.set(FurnaceData.Data.COOK_PROGRESS, 0);
         }
         //keep track of the current item to check next tick
@@ -105,7 +106,8 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
                         currentIngredient = ItemStack.EMPTY;
                         currentResult = ItemStack.EMPTY;
 
-                    } else if (!ItemStack.isSame(remainingIngredient, currentIngredient)) {
+//                    } else if (!ItemStack.isSameItemSameTags(remainingIngredient, currentIngredient)) {
+                    } else if (!ItemStack.isSameItemSameComponents(remainingIngredient, currentIngredient)) {
                         currentResult = ItemStack.EMPTY;
                         furnaceData.set(FurnaceData.Data.COOK_MAX, 0);
                     }
@@ -166,13 +168,13 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
     }
 
     @Override
-    public void load(@NotNull CompoundTag tag) {
-        super.load(tag);
-        outputHandler.deserializeNBT(tag.getCompound("invOut"));
-        augmentHandler.deserializeNBT(tag.getCompound("invAug"));
-        fuelHandler.deserializeNBT(tag.getCompound("invFuel"));
-        ingredientHandler.deserializeNBT(tag.getCompound("invIngr"));
-        experienceHandler.deserializeNBT(tag.getCompound("invExp"));
+    public void loadAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.loadAdditional(tag, registries);
+        outputHandler.deserializeNBT(registries, tag.getCompound("invOut"));
+        augmentHandler.deserializeNBT(registries, tag.getCompound("invAug"));
+        fuelHandler.deserializeNBT(registries, tag.getCompound("invFuel"));
+        ingredientHandler.deserializeNBT(registries, tag.getCompound("invIngr"));
+        experienceHandler.deserializeNBT(registries, tag.getCompound("invExp"));
         furnaceData.set(FurnaceData.Data.COOK_PROGRESS, tag.getInt("cookProgress"));
         furnaceData.set(FurnaceData.Data.COOK_MAX, tag.getInt("cookMax"));
         furnaceData.set(FurnaceData.Data.EXPERIENCE, tag.getInt("experience"));
@@ -180,13 +182,13 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag tag) {
-        super.saveAdditional(tag);
-        tag.put("invOut", outputHandler.serializeNBT());
-        tag.put("invAug", augmentHandler.serializeNBT());
-        tag.put("invFuel", fuelHandler.serializeNBT());
-        tag.put("invIngr", ingredientHandler.serializeNBT());
-        tag.put("invExp", experienceHandler.serializeNBT());
+    public void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+        super.saveAdditional(tag, registries);
+        tag.put("invOut", outputHandler.serializeNBT(registries));
+        tag.put("invAug", augmentHandler.serializeNBT(registries));
+        tag.put("invFuel", fuelHandler.serializeNBT(registries));
+        tag.put("invIngr", ingredientHandler.serializeNBT(registries));
+        tag.put("invExp", experienceHandler.serializeNBT(registries));
         tag.putInt("cookProgress", furnaceData.get(FurnaceData.Data.COOK_PROGRESS));
         tag.putInt("cookMax", furnaceData.get(FurnaceData.Data.COOK_MAX));
         tag.putInt("experience", furnaceData.get(FurnaceData.Data.EXPERIENCE));
@@ -194,20 +196,24 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
 
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
-        if (capability == ForgeCapabilities.ITEM_HANDLER) {
-            if (side == Direction.DOWN) {
-                //FurnaceMk2.debugLog("Passing lazy output to bottom");
-                return lazyOutputHandler.cast();
-            }
-            return combinedHandler.cast();
-        }
-        return super.getCapability(capability, side);
-    }
+//    @Nonnull
+//    @Override
+//    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
+//        if (capability == ForgeCapabilities.ITEM_HANDLER) {
+//            if (side == Direction.DOWN) {
+//                //FurnaceMk2.debugLog("Passing lazy output to bottom");
+//                return lazyOutputHandler.cast();
+//            }
+//            return combinedHandler.cast();
+//        }
+//        return super.getCapability(capability, side);
+//    }
 
-    public IItemHandler getItemHandler () {
+    public IItemHandler getItemHandler(@Nullable Direction side) {
+//        return combined;
+        if (side == Direction.DOWN) {
+            return outputHandler;
+        }
         return combined;
     }
 
@@ -296,5 +302,15 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
             case OUTPUT -> outputHandler.insertItem(OUTPUT_SLOTS[index], stack, simulate, true);
             default -> ItemStack.EMPTY;
         };
+    }
+
+    @Override
+    public @NotNull Component getDisplayName() {
+        return Component.translatable(FurnaceMk2.MODID+".furnacemk2");
+    }
+
+    @Override
+    public @Nullable AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
+        return new FurnaceMk2Menu(id, this.level, this.worldPosition, player.getInventory(), player, this.getFurnaceData());
     }
 }

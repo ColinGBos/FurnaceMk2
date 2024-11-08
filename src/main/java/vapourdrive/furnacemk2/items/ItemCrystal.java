@@ -15,13 +15,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.config.ConfigSettings;
+import vapourdrive.furnacemk2.setup.Registration;
 import vapourdrive.furnacemk2.utils.ExperienceUtils;
-import vapourdrive.vapourware.setup.ModSetup;
-
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class ItemCrystal extends Item implements IExperienceStorage{
     public static final String TAG_EXPERIENCE = "FurnaceMK2.Crystal.Experience";
 
     public ItemCrystal() {
-        super(new Item.Properties().stacksTo(1).tab(ModSetup.VAPOUR_GROUP));
+        super(new Item.Properties().stacksTo(1));
     }
 
     @Override
@@ -102,7 +101,8 @@ public class ItemCrystal extends Item implements IExperienceStorage{
 
     @Override
     public int getCurrentExperienceStored(ItemStack stack) {
-        return stack.getOrCreateTag().getInt(TAG_EXPERIENCE);
+//        return stack.getOrCreateTag().getInt(TAG_EXPERIENCE);
+        return stack.getOrDefault(Registration.EXPERIENCE_DATA, 0);
     }
 
     @Override
@@ -111,7 +111,8 @@ public class ItemCrystal extends Item implements IExperienceStorage{
         int experienceExtracted = Math.min(experience, maxExtract);
         if (!simulate) {
             experience -= experienceExtracted;
-            stack.getOrCreateTag().putInt(TAG_EXPERIENCE, experience);
+//            stack.getOrCreateTag().putInt(TAG_EXPERIENCE, experience);
+            stack.set(Registration.EXPERIENCE_DATA, experience);
         }
         return experienceExtracted;
     }
@@ -122,7 +123,8 @@ public class ItemCrystal extends Item implements IExperienceStorage{
         int experienceReceived = Math.min(getMaxExperienceStored(stack) - experience, maxReceive);
         if (!simulate) {
             experience += experienceReceived;
-            stack.getOrCreateTag().putInt(TAG_EXPERIENCE, experience);
+//            stack.getOrCreateTag().putInt(TAG_EXPERIENCE, experience);
+            stack.set(Registration.EXPERIENCE_DATA, experience);
         }
         return experienceReceived;
     }
@@ -144,7 +146,7 @@ public class ItemCrystal extends Item implements IExperienceStorage{
     }
 
     @Override
-    public boolean canBeDepleted() {
+    public boolean isDamageable(@NotNull ItemStack stack) {
         return false;
     }
 
@@ -155,7 +157,7 @@ public class ItemCrystal extends Item implements IExperienceStorage{
 
 
     @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+    public boolean isBookEnchantable(@NotNull ItemStack stack, @NotNull ItemStack book) {
         return false;
     }
 
@@ -176,10 +178,10 @@ public class ItemCrystal extends Item implements IExperienceStorage{
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@NotNull ItemStack stack, Level world, List<Component> tooltip, @NotNull TooltipFlag flag) {
-        tooltip.add(Component.translatable("message.crystal_gem_item.1").withStyle(ChatFormatting.BLUE));
-        tooltip.add(Component.translatable("message.crystal_gem_item.2").withStyle(ChatFormatting.BLUE));
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+        tooltipComponents.add(Component.translatable("message.crystal_gem_item.1").withStyle(ChatFormatting.BLUE));
+        tooltipComponents.add(Component.translatable("message.crystal_gem_item.2").withStyle(ChatFormatting.BLUE));
         DecimalFormat df = new DecimalFormat("#,###");
-        tooltip.add(Component.translatable("message.crystal_gem_item.3").append(df.format(this.getCurrentExperienceStored(stack)) + "/" + df.format(this.getMaxExperienceStored(stack))).withStyle(ChatFormatting.GREEN));
+        tooltipComponents.add(Component.translatable("message.crystal_gem_item.3").append(df.format(this.getCurrentExperienceStored(stack)) + "/" + df.format(this.getMaxExperienceStored(stack))).withStyle(ChatFormatting.GREEN));
     }
 }

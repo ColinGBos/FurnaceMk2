@@ -10,14 +10,14 @@
       "item": "minecraft:lapis_lazuli"
     },
     "E": {
-      "tag": "forge:gems/emerald"
+      "tag": "c:gems/emerald"
     },
     "D": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     }
   },
   "result": {
-    "item": "furnacemk2:crystal_gem_item",
+    "id": "furnacemk2:crystal_gem_item",
     "count": 1
   }
 }

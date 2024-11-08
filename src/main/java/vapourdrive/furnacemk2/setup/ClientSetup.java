@@ -1,16 +1,17 @@
 package vapourdrive.furnacemk2.setup;
 
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import vapourdrive.furnacemk2.FurnaceMk2;
 import vapourdrive.furnacemk2.furnace.FurnaceMk2Screen;
 
-@Mod.EventBusSubscriber(modid = FurnaceMk2.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = FurnaceMk2.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ClientSetup {
 
-    public static void setup(final FMLClientSetupEvent event) {
-        event.enqueueWork(() -> MenuScreens.register(Registration.FURNACEMK2_CONTAINER.get(), FurnaceMk2Screen::new));
+    @SubscribeEvent
+    public static void registerMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(Registration.FURNACEMK2_MENU.get(), FurnaceMk2Screen::new);
     }
 }

@@ -1,7 +1,7 @@
 package vapourdrive.furnacemk2.furnace;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -13,8 +13,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FurnaceMk2Screen extends AbstractBaseMachineScreen<FurnaceMk2Container> {
-    private final FurnaceMk2Container container;
+public class FurnaceMk2Screen extends AbstractBaseMachineScreen<FurnaceMk2Menu> {
+    private final FurnaceMk2Menu container;
     final static int COOK_BAR_XPOS = 67;
     final static  int COOK_BAR_YPOS = 21;
     final static  int COOK_BAR_ICONX = 184;   // texture position of white arrow icon [u,v]
@@ -31,27 +31,27 @@ public class FurnaceMk2Screen extends AbstractBaseMachineScreen<FurnaceMk2Contai
 
     DecimalFormat exp_f = new DecimalFormat("#,###.##");
 
-    public FurnaceMk2Screen(FurnaceMk2Container container, Inventory inv, Component name) {
+    public FurnaceMk2Screen(FurnaceMk2Menu container, Inventory inv, Component name) {
         super(container, inv, name, new DeferredComponent(FurnaceMk2.MODID, "furnacemk2"), 33, 17, 52, 158, 6, 1, true);
         this.container = container;
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
+    protected void renderBg(@NotNull GuiGraphics graphics, float partialTicks, int mouseX, int mouseY) {
+        super.renderBg(graphics, partialTicks, mouseX, mouseY);
 
         //Draw the cooking progress (arrow)
         int l = (int)(container.getCookProgress() * COOK_BAR_WIDTH);
-        this.blit(matrixStack, this.leftPos + COOK_BAR_XPOS, this.topPos + COOK_BAR_YPOS, COOK_BAR_ICONX, COOK_BAR_ICONY, l + 1, COOK_BAR_HEIGHT);
+        graphics.blit(this.GUI, this.leftPos + COOK_BAR_XPOS, this.topPos + COOK_BAR_YPOS, COOK_BAR_ICONX, COOK_BAR_ICONY, l + 1, COOK_BAR_HEIGHT);
 
         //Draw the currently stored experience
         int k = (int)(container.getExperiencePercentage() * EXP_WIDTH);
-        this.blit(matrixStack, this.leftPos + EXP_XPOS, this.topPos + EXP_YPOS, EXP_ICONX, EXP_ICONY, k, EXP_HEIGHT);
+        graphics.blit(this.GUI, this.leftPos + EXP_XPOS, this.topPos + EXP_YPOS, EXP_ICONX, EXP_ICONY, k, EXP_HEIGHT);
     }
 
     @Override
-    protected void renderTooltip(@NotNull PoseStack matrixStack, int mouseX, int mouseY) {
-        super.renderTooltip(matrixStack, mouseX, mouseY);
+    protected void renderTooltip(@NotNull GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderTooltip(graphics, mouseX, mouseY);
         boolean notCarrying = this.menu.getCarried().isEmpty();
 
         List<Component> hoveringText = new ArrayList<>();
@@ -72,7 +72,7 @@ public class FurnaceMk2Screen extends AbstractBaseMachineScreen<FurnaceMk2Contai
 
         // If hoveringText is not empty draw the hovering text.  Otherwise, use vanilla to render tooltip for the slots
         if (!hoveringText.isEmpty()){
-            renderComponentTooltip(matrixStack, hoveringText, mouseX, mouseY);
+            graphics.renderComponentTooltip(this.font, hoveringText, mouseX, mouseY);
         }
     }
 

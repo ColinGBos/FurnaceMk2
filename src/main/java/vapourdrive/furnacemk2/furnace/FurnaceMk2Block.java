@@ -1,31 +1,35 @@
 package vapourdrive.furnacemk2.furnace;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
-import vapourdrive.furnacemk2.FurnaceMk2;
+import vapourdrive.furnacemk2.setup.Registration;
 import vapourdrive.vapourware.shared.base.AbstractBaseMachineBlock;
 
 import javax.annotation.Nullable;
 
 public class FurnaceMk2Block extends AbstractBaseMachineBlock implements EntityBlock {
+    public static final MapCodec<FurnaceMk2Block> CODEC = simpleCodec(FurnaceMk2Block::new);
+
     public FurnaceMk2Block() {
-        super(BlockBehaviour.Properties.of(Material.STONE), 0.2f);
+        super(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM), 0.2f);
+    }
+
+    public FurnaceMk2Block(Properties properties) {
+        super(properties, 0.2f);
     }
 
     @Nullable
@@ -52,41 +56,40 @@ public class FurnaceMk2Block extends AbstractBaseMachineBlock implements EntityB
     protected void openContainer(Level level, @NotNull BlockPos pos, @NotNull Player player) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof FurnaceMk2Tile furnace) {
-            MenuProvider containerProvider = new MenuProvider() {
-                @Override
-                public @NotNull Component getDisplayName() {
-                    return Component.translatable(FurnaceMk2.MODID + ".furnacemk2");
-                }
-
-                @Override
-                public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity) {
-                    return new FurnaceMk2Container(windowId, level, pos, playerInventory, playerEntity, furnace.getFurnaceData());
-                }
-            };
-            NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
-        } else {
-            throw new IllegalStateException("Our named container provider is missing!");
+            player.openMenu((MenuProvider) blockEntity, pos);
         }
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos blockPos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity tileEntity = world.getBlockEntity(blockPos);
             if (tileEntity instanceof FurnaceMk2Tile machine) {
-                AbstractBaseMachineBlock.dropContents(world, blockPos, machine.getItemHandler());
+                AbstractBaseMachineBlock.dropContents(world, blockPos, machine.getItemHandler(null));
             }
             super.onRemove(state, world, blockPos, newState, isMoving);
         }
     }
 
+//    @Override
+//    protected CompoundTag putAdditionalInfo(CompoundTag tag, BlockEntity blockEntity) {
+//        if(blockEntity instanceof FurnaceMk2Tile machine){
+//            tag.putInt("furnacemk2.exp", machine.getCurrentExp());
+//
+//        }
+//        return tag;
+//    }
+
     @Override
-    protected CompoundTag putAdditionalInfo(CompoundTag tag, BlockEntity blockEntity) {
-        if(blockEntity instanceof FurnaceMk2Tile machine){
-            tag.putInt("furnacemk2.exp", machine.getCurrentExp());
+    protected ItemStack putAdditionalInfo(ItemStack stack, BlockEntity blockEntity) {
+        if(blockEntity instanceof FurnaceMk2Tile machine) {
+            stack.set(Registration.EXPERIENCE_DATA, machine.getCurrentExp());
         }
-        return tag;
+        return stack;
     }
 
+    @Override
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
 }

@@ -7,17 +7,17 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:gems/emerald"
+      "tag": "c:gems/emerald"
     },
     "D": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "L": {
       "item": "minecraft:lapis_block"
     }
   },
   "result": {
-    "item": "furnacemk2:experience_core",
+    "id": "furnacemk2:experience_core",
     "count": 1
   }
 }

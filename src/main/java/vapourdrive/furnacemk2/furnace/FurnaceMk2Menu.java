@@ -8,10 +8,9 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.FurnaceMk2;
 import vapourdrive.furnacemk2.furnace.slots.SlotCore;
@@ -20,13 +19,13 @@ import vapourdrive.furnacemk2.furnace.slots.SlotIngredient;
 import vapourdrive.furnacemk2.items.IExperienceStorage;
 import vapourdrive.furnacemk2.setup.Registration;
 import vapourdrive.furnacemk2.utils.FurnaceUtils;
-import vapourdrive.vapourware.shared.base.AbstractBaseMachineContainer;
+import vapourdrive.vapourware.shared.base.AbstractBaseMachineMenu;
 import vapourdrive.vapourware.shared.base.slots.SlotFuel;
 import vapourdrive.vapourware.shared.base.slots.SlotOutput;
 
 import java.util.Objects;
 
-public class FurnaceMk2Container extends AbstractBaseMachineContainer {
+public class FurnaceMk2Menu extends AbstractBaseMachineMenu {
 
     // gui position of the player inventory grid
     public static final int PLAYER_INVENTORY_XPOS = 8;
@@ -34,8 +33,8 @@ public class FurnaceMk2Container extends AbstractBaseMachineContainer {
 
     protected final FurnaceMk2Tile tileEntity;
 
-    public FurnaceMk2Container(int windowId, Level world, BlockPos pos, Inventory inv, Player player, FurnaceData furnaceData) {
-        super(windowId, world, pos, inv, player, Registration.FURNACEMK2_CONTAINER.get(),furnaceData);
+    public FurnaceMk2Menu(int windowId, Level world, BlockPos pos, Inventory inv, Player player, FurnaceData furnaceData) {
+        super(windowId, world, pos, inv, player, Registration.FURNACEMK2_MENU.get(),furnaceData);
         tileEntity = (FurnaceMk2Tile) world.getBlockEntity(pos);
 
         //We use this vs the builtin method because we split all the shorts
@@ -43,19 +42,18 @@ public class FurnaceMk2Container extends AbstractBaseMachineContainer {
 
         layoutPlayerInventorySlots(PLAYER_INVENTORY_XPOS, PLAYER_INVENTORY_YPOS);
 
-        if (tileEntity != null) {
-            tileEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).ifPresent(h -> {
-                addSlot(new SlotCore(h, 0, 8, 17, Registration.INSULATION_CORE_ITEM.get()));
-                addSlot(new SlotCore(h, 1, 8, 35, Registration.THERMAL_CORE_ITEM.get()));
-                addSlot(new SlotCore(h, 2, 8, 53, Registration.EXPERIENCE_CORE_ITEM.get()));
-                addSlot(new SlotFuel(h, 3, 49, 53));
-                addSlot(new SlotIngredient(h, 4, 49, 22, this.world));
-                addSlot(new SlotOutput(h, 5, 94, 22));
-                addSlot(new SlotOutput(h, 6, 112, 22));
-                addSlot(new SlotOutput(h, 7, 130, 22));
-                addSlot(new SlotOutput(h, 8, 148, 22));
-                addSlot(new SlotExperience(h, 9, 148, 53));
-            });
+        if (tileEntity != null && tileEntity instanceof FurnaceMk2Tile machine) {
+            IItemHandler handler = machine.getItemHandler(null);
+            addSlot(new SlotCore(handler, 0, 8, 17, Registration.INSULATION_CORE_ITEM.get()));
+            addSlot(new SlotCore(handler, 1, 8, 35, Registration.THERMAL_CORE_ITEM.get()));
+            addSlot(new SlotCore(handler, 2, 8, 53, Registration.EXPERIENCE_CORE_ITEM.get()));
+            addSlot(new SlotFuel(handler, 3, 49, 53));
+            addSlot(new SlotIngredient(handler, 4, 49, 22, this.world));
+            addSlot(new SlotOutput(handler, 5, 94, 22));
+            addSlot(new SlotOutput(handler, 6, 112, 22));
+            addSlot(new SlotOutput(handler, 7, 130, 22));
+            addSlot(new SlotOutput(handler, 8, 148, 22));
+            addSlot(new SlotExperience(handler, 9, 148, 53));
         }
     }
 
@@ -95,7 +93,7 @@ public class FurnaceMk2Container extends AbstractBaseMachineContainer {
             //Player Inventory
             else if (index <= 35) {
                 //Inventory to fuel
-                if (ForgeHooks.getBurnTime(stack, RecipeType.SMELTING) > 0.0) {
+                if (stack.getBurnTime(RecipeType.SMELTING) > 0.0) {
                     if (!this.moveItemStackTo(stack, 39, 40, false)) {
                         return ItemStack.EMPTY;
                     }

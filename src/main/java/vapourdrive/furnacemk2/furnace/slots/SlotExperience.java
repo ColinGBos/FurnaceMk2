@@ -1,7 +1,7 @@
 package vapourdrive.furnacemk2.furnace.slots;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import vapourdrive.furnacemk2.FurnaceMk2;
 import vapourdrive.furnacemk2.items.IExperienceStorage;
 import vapourdrive.vapourware.shared.base.slots.BaseSlotIngredient;
