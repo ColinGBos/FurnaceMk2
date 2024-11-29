@@ -64,8 +64,6 @@ public class ItemCrystal extends Item implements IExperienceStorage{
         }
         else if(!player.isShiftKeyDown() && storedXP > 0) {
             int xpForPlayer = ExperienceUtils.getExperienceForLevel(player.experienceLevel + 1) - ExperienceUtils.getPlayerXP(player);
-            //if retrievalPercentage is 75%, these 75% should be given to the player, but an extra 25% needs to be removed from the tome
-            //using floor to be generous towards the player, removing slightly less xp than should be removed (can't be 100% accurate, because XP is saved as an int)
             int xpToRetrieve = (int) (double) xpForPlayer;
             int actuallyRemoved = extractExperience(stack, xpToRetrieve, false);
 
@@ -76,7 +74,6 @@ public class ItemCrystal extends Item implements IExperienceStorage{
 
             ExperienceUtils.addPlayerXP(player, xpForPlayer);
 
-            //picking up XP orbs creates a sound already, so only play a sound when XP is retrieved directly
             if(world.isClientSide()) {
                 world.playSound(player, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.05F, getPitch(world.getRandom(), stack));
             }

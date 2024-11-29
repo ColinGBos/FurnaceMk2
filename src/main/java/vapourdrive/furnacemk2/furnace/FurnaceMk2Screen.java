@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.FurnaceMk2;
 import vapourdrive.vapourware.shared.base.AbstractBaseMachineScreen;
+import vapourdrive.vapourware.shared.utils.CompUtils;
 import vapourdrive.vapourware.shared.utils.DeferredComponent;
 
 import java.text.DecimalFormat;
@@ -79,7 +80,7 @@ public class FurnaceMk2Screen extends AbstractBaseMachineScreen<FurnaceMk2Menu> 
     @Override
     protected void getAdditionalInfoHover(List<Component> hoveringText) {
         super.getAdditionalInfoHover(hoveringText);
-        hoveringText.add(Component.translatable(comp.getMod()+comp.getTail()+".wrench").withStyle(ChatFormatting.GOLD));
+        hoveringText.add(CompUtils.getComp(comp.getMod(), comp.getTail() + ".wrench").withStyle(ChatFormatting.GOLD));
     }
 
 }

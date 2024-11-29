@@ -2,6 +2,9 @@ package vapourdrive.furnacemk2.furnace;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,6 +53,20 @@ public class FurnaceMk2Block extends AbstractBaseMachineBlock implements EntityB
                 }
             };
         }
+    }
+
+    @Override
+    public boolean sneakWrenchMachine(Player player, Level level, BlockPos pos) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof FurnaceMk2Tile furnace) {
+            player.giveExperiencePoints(furnace.getCurrentExp()/100);
+            furnace.getFurnaceData().set(FurnaceData.Data.EXPERIENCE, 0);
+            if(level.isClientSide()) {
+                level.playSound(player, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.05F, 1f);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
