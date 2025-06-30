@@ -9,6 +9,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -302,6 +303,11 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile implements MenuProv
             case OUTPUT -> outputHandler.insertItem(OUTPUT_SLOTS[index], stack, simulate, true);
             default -> ItemStack.EMPTY;
         };
+    }
+
+    @Override
+    public ContainerData getContainerData() {
+        return this.getFurnaceData();
     }
 
     @Override

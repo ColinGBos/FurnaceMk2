@@ -1,6 +1,7 @@
 package vapourdrive.furnacemk2.items;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -21,6 +22,8 @@ import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.config.ConfigSettings;
 import vapourdrive.furnacemk2.setup.Registration;
 import vapourdrive.furnacemk2.utils.ExperienceUtils;
+import vapourdrive.vapourware.shared.utils.CompUtils;
+
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -176,9 +179,15 @@ public class ItemCrystal extends Item implements IExperienceStorage{
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("message.crystal_gem_item.1").withStyle(ChatFormatting.BLUE));
-        tooltipComponents.add(Component.translatable("message.crystal_gem_item.2").withStyle(ChatFormatting.BLUE));
+        if(Screen.hasShiftDown()) {
+            tooltipComponents.add(Component.translatable("message.crystal_gem_item.1").withStyle(ChatFormatting.BLUE));
+            tooltipComponents.add(Component.translatable("message.crystal_gem_item.2").withStyle(ChatFormatting.BLUE));
+        } else {
+            CompUtils.addShiftInfo(tooltipComponents);
+        }
         DecimalFormat df = new DecimalFormat("#,###");
-        tooltipComponents.add(Component.translatable("message.crystal_gem_item.3").append(df.format(this.getCurrentExperienceStored(stack)) + "/" + df.format(this.getMaxExperienceStored(stack))).withStyle(ChatFormatting.GREEN));
+        String stored = df.format(this.getCurrentExperienceStored(stack)) + "/" + df.format(this.getMaxExperienceStored(stack));
+        int levels = ExperienceUtils.getLevelForExperience(this.getCurrentExperienceStored(stack));
+        tooltipComponents.add(Component.translatable("message.crystal_gem_item.3",stored, levels).withStyle(ChatFormatting.GREEN));
     }
 }

@@ -13,7 +13,7 @@
   "message.furnace_core.speed.2": "Faster processing speed",
   "message.crystal_gem_item.1": "Right-Click = Crystal->Player",
   "message.crystal_gem_item.2": "Sneak-Right-Click = Player->Crystal",
-  "message.crystal_gem_item.3": "Exp: ",
+  "message.crystal_gem_item.3": "Exp: %s (%s Levels)",
   "furnacemk2.upgradeslot": "Upgrade Slot: %s",
   "furnacemk2.experienceslot": "Experience Crystal Slot",
   "furnacemk2.config.furnaceBaseExperience": "Furnace Base Experience",
