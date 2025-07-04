@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -78,27 +77,8 @@ public class FurnaceMk2Block extends AbstractBaseMachineBlock implements EntityB
     }
 
     @Override
-    public void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos blockPos, BlockState newState, boolean isMoving) {
-        if (state.getBlock() != newState.getBlock()) {
-            BlockEntity tileEntity = world.getBlockEntity(blockPos);
-            if (tileEntity instanceof FurnaceMk2Tile machine) {
-                AbstractBaseMachineBlock.dropContents(world, blockPos, machine.getItemHandler(null));
-            }
-            super.onRemove(state, world, blockPos, newState, isMoving);
-        }
-    }
-
-//    @Override
-//    protected CompoundTag putAdditionalInfo(CompoundTag tag, BlockEntity blockEntity) {
-//        if(blockEntity instanceof FurnaceMk2Tile machine){
-//            tag.putInt("furnacemk2.exp", machine.getCurrentExp());
-//
-//        }
-//        return tag;
-//    }
-
-    @Override
     protected ItemStack putAdditionalInfo(ItemStack stack, BlockEntity blockEntity) {
+        super.putAdditionalInfo(stack,blockEntity);
         if(blockEntity instanceof FurnaceMk2Tile machine) {
             stack.set(Registration.EXPERIENCE_DATA, machine.getCurrentExp());
         }
