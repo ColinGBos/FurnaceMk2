@@ -20,8 +20,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.config.ConfigSettings;
 import vapourdrive.furnacemk2.utils.ExperienceUtils;
-import vapourdrive.vapourware.setup.ModSetup;
-
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -29,7 +27,7 @@ public class ItemCrystal extends Item implements IExperienceStorage{
     public static final String TAG_EXPERIENCE = "FurnaceMK2.Crystal.Experience";
 
     public ItemCrystal() {
-        super(new Item.Properties().stacksTo(1).tab(ModSetup.VAPOUR_GROUP));
+        super(new Item.Properties().stacksTo(1));
     }
 
     @Override

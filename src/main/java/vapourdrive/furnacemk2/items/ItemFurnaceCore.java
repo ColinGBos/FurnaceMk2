@@ -8,8 +8,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.config.ConfigSettings;
-import vapourdrive.vapourware.setup.ModSetup;
-
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -19,7 +17,7 @@ public class ItemFurnaceCore extends Item {
     public String type;
 
     public ItemFurnaceCore(String type) {
-        super(new Item.Properties().stacksTo(1).tab(ModSetup.VAPOUR_GROUP));
+        super(new Item.Properties().stacksTo(1));
         this.type = type;
     }
 

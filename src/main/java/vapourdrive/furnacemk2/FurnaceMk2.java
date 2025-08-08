@@ -1,6 +1,7 @@
 package vapourdrive.furnacemk2;
 
 
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -22,21 +23,25 @@ public class FurnaceMk2
     public static boolean debugMode = true;
 
     public FurnaceMk2() {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ConfigSettings.SERVER_CONFIG);
 
         Registration.init();
 
         // Register the setup method for modloading
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientSetup::setup);
+        eventBus.addListener(ClientSetup::setup);
+        eventBus.addListener(Registration::buildContents);
     }
 
     public static void debugLog(String toLog) {
-        if(debugMode) {
-            log(toLog);
+        if(isDebugMode()) {
+            LOGGER.log(Level.DEBUG, toLog);
         }
     }
 
-    private static void log(String toLog) {
-        LOGGER.log(Level.INFO, toLog);
+    public static boolean isDebugMode() {
+        return java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("jdwp") && debugMode;
     }
+
 }

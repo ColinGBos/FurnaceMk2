@@ -27,7 +27,7 @@ public class FurnaceUtils {
 
     public static ItemStack getSmeltingResultForItem(Level world, ItemStack itemStack) {
         Optional<SmeltingRecipe> matchingRecipe = getMatchingRecipeForInput(world, itemStack);
-        return matchingRecipe.map(furnaceRecipe -> furnaceRecipe.getResultItem().copy()).orElse(ItemStack.EMPTY);
+        return matchingRecipe.map(furnaceRecipe -> furnaceRecipe.getResultItem(world.registryAccess()).copy()).orElse(ItemStack.EMPTY);
     }
 
     public static Optional<SmeltingRecipe> getMatchingRecipeForInput(Level world, ItemStack itemStack) {

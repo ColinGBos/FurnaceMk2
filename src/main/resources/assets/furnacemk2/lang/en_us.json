@@ -24,5 +24,6 @@
   "furnacemk2.config.furnaceUpgradedSpeed": "Augmented Furnace Speed",
   "furnacemk2.config.crystalExperienceStorage": "Attuned Crystal XP Storage",
   "furnacemk2.config.title": "FurnaceMk2 Config Settings",
-  "furnacemk2.furnacemk2.info": "Fuel-powered and upgradable furnace that manages fuel reserves, experience, and some extra output capacity."
+  "furnacemk2.furnacemk2.info": "Fuel-powered and upgradable furnace that manages fuel reserves, experience, and some extra output capacity.",
+  "furnacemk2.furnacemk2.wrench": "Sneak-right-click with the Handyman's wrench to get the experience out without a crystal."
 }

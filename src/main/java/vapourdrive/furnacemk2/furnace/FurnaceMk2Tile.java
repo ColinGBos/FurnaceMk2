@@ -65,7 +65,7 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
         ItemStack ingredient = getStackInSlot(Area.INGREDIENT_1, 0);
 
         //Reset the cook progress if it's a new item
-        if (!lastSmelting.isEmpty() && !ItemStack.isSame(ingredient, lastSmelting)) {
+        if (!lastSmelting.isEmpty() && !ItemStack.isSameItemSameTags(ingredient, lastSmelting)) {
             furnaceData.set(FurnaceData.Data.COOK_PROGRESS, 0);
         }
         //keep track of the current item to check next tick
@@ -105,7 +105,7 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile {
                         currentIngredient = ItemStack.EMPTY;
                         currentResult = ItemStack.EMPTY;
 
-                    } else if (!ItemStack.isSame(remainingIngredient, currentIngredient)) {
+                    } else if (!ItemStack.isSameItemSameTags(remainingIngredient, currentIngredient)) {
                         currentResult = ItemStack.EMPTY;
                         furnaceData.set(FurnaceData.Data.COOK_MAX, 0);
                     }

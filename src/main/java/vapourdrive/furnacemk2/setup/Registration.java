@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -14,7 +15,6 @@ import net.minecraftforge.registries.RegistryObject;
 import vapourdrive.furnacemk2.furnace.*;
 import vapourdrive.furnacemk2.items.ItemCrystal;
 import vapourdrive.furnacemk2.items.ItemFurnaceCore;
-import vapourdrive.vapourware.setup.ModSetup;
 
 import static vapourdrive.furnacemk2.FurnaceMk2.MODID;
 
@@ -31,8 +31,19 @@ public class Registration {
         CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
+    public static void buildContents(BuildCreativeModeTabContentsEvent event) {
+        // Add to ingredients tab
+        if (event.getTabKey() == vapourdrive.vapourware.setup.Registration.VAPOUR_GROUP.getKey()) {
+            event.accept(FURNACEMK2_ITEM);
+            event.accept(EXPERIENCE_CORE_ITEM);
+            event.accept(INSULATION_CORE_ITEM);
+            event.accept(THERMAL_CORE_ITEM);
+            event.accept(CRYSTAL_GEM_ITEM);
+        }
+    }
+
     public static final RegistryObject<FurnaceMk2Block> FURNACEMK2_BLOCK = BLOCKS.register("furnacemk2", FurnaceMk2Block::new);
-    public static final RegistryObject<Item> FURNACEMK2_ITEM = ITEMS.register("furnacemk2", () -> new FurnaceMk2Item(FURNACEMK2_BLOCK.get(), new Item.Properties().tab(ModSetup.VAPOUR_GROUP)));
+    public static final RegistryObject<Item> FURNACEMK2_ITEM = ITEMS.register("furnacemk2", () -> new FurnaceMk2Item(FURNACEMK2_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<BlockEntityType<FurnaceMk2Tile>> FURNACEMK2_TILE = TILES.register("furnacemk2", () -> BlockEntityType.Builder.of(FurnaceMk2Tile::new, FURNACEMK2_BLOCK.get()).build(null));
 
     public static final RegistryObject<MenuType<FurnaceMk2Container>> FURNACEMK2_CONTAINER = CONTAINERS.register("furnacemk2", () -> IForgeMenuType.create((windowId, inv, data) -> {

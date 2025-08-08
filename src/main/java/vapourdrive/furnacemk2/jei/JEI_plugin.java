@@ -26,7 +26,7 @@ public class JEI_plugin implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         FurnaceMk2.debugLog("Adding Recipe Click Area");
-        registration.addRecipeClickArea(FurnaceMk2Screen.class, 72, 38, 16, 15, RecipeTypes.FUELING, RecipeTypes.SMELTING);
+        registration.addRecipeClickArea(FurnaceMk2Screen.class, 142, 5, 15, 15, RecipeTypes.FUELING, RecipeTypes.SMELTING);
     }
 
     @Override

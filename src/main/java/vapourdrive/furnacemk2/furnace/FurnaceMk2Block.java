@@ -4,18 +4,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import vapourdrive.furnacemk2.FurnaceMk2;
@@ -25,7 +27,7 @@ import javax.annotation.Nullable;
 
 public class FurnaceMk2Block extends AbstractBaseMachineBlock implements EntityBlock {
     public FurnaceMk2Block() {
-        super(BlockBehaviour.Properties.of(Material.STONE), 0.2f);
+        super(BlockBehaviour.Properties.copy(Blocks.FURNACE), 0.2f);
     }
 
     @Nullable
@@ -46,6 +48,20 @@ public class FurnaceMk2Block extends AbstractBaseMachineBlock implements EntityB
                 }
             };
         }
+    }
+
+    @Override
+    public boolean sneakWrenchMachine(Player player, Level level, BlockPos pos) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof FurnaceMk2Tile furnace) {
+            player.giveExperiencePoints(furnace.getCurrentExp()/100);
+            furnace.getFurnaceData().set(FurnaceData.Data.EXPERIENCE, 0);
+            if(level.isClientSide()) {
+                level.playSound(player, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.05F, 1f);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
