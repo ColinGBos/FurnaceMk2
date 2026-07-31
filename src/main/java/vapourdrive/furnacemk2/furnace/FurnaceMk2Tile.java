@@ -66,7 +66,13 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile implements MenuProv
         super.tickServer(state);
         ItemStack ingredient = getStackInSlot(Area.INGREDIENT_1, 0);
 
-        //Reset the cook progress if it's a new item
+        // Reset the cook progress and cached recipe if it's a new item
+    if (!lastSmelting.isEmpty() && !ItemStack.isSameItemSameComponents(ingredient, lastSmelting)) {
+        furnaceData.set(FurnaceData.Data.COOK_PROGRESS, 0);
+        furnaceData.set(FurnaceData.Data.COOK_MAX, 0);
+        currentIngredient = ItemStack.EMPTY;
+        currentResult = ItemStack.EMPTY;
+    }
         if (!lastSmelting.isEmpty() && !ItemStack.isSameItemSameComponents(ingredient, lastSmelting)) {
             furnaceData.set(FurnaceData.Data.COOK_PROGRESS, 0);
         }
@@ -81,14 +87,14 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile implements MenuProv
     }
 
     private void doCookProcesses(ItemStack ingredient, BlockState state) {
-        if (furnaceData.get(FurnaceData.Data.COOK_PROGRESS)==0){
-            if(currentResult.isEmpty()) {
+        if (furnaceData.get(FurnaceData.Data.COOK_PROGRESS) == 0) {
+            if (currentResult.isEmpty() || !ItemStack.isSameItemSameComponents(ingredient, currentIngredient)) {
                 currentResult = FurnaceUtils.getSmeltingResultForItem(level, ingredient);
-                currentIngredient = ingredient;
+                currentIngredient = ingredient.copy();
                 furnaceData.set(FurnaceData.Data.COOK_MAX, FurnaceUtils.getCookTime(level, ingredient));
             }
 
-            if(MachineUtils.pushOutput(currentResult, true, this) >= 1 && furnaceData.get(FurnaceData.Data.FUEL) >= furnaceData.get(FurnaceData.Data.COOK_MAX)){
+            if (MachineUtils.pushOutput(currentResult, true, this) >= 1 && furnaceData.get(FurnaceData.Data.FUEL) >= furnaceData.get(FurnaceData.Data.COOK_MAX)) {
                 assert level != null;
                 level.setBlock(worldPosition, state.setValue(BlockStateProperties.LIT, true), Block.UPDATE_ALL);
                 this.setChanged();
