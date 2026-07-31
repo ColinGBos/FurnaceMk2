@@ -27,7 +27,7 @@ public class FurnaceIngredientHandler extends IngredientHandler {
     @Nonnull
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
 //        FurnaceMk2.debugLog("slot count: "+getStackInSlot(slot).getCount()+", amount: "+amount);
-        if (getStackInSlot(slot).getCount() == amount){
+        if (!simulate && getStackInSlot(slot).getCount() == amount){
             FurnaceMk2.debugLog("slot count: "+getStackInSlot(slot).getCount()+", amount: "+amount);
             Objects.requireNonNull(tile.getLevel()).setBlock(tile.getBlockPos(), tile.getBlockState().setValue(BlockStateProperties.LIT, false), Block.UPDATE_ALL);
         }
