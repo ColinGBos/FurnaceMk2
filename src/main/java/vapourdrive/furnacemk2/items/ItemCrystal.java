@@ -52,35 +52,36 @@ public class ItemCrystal extends Item implements IExperienceStorage{
                 return new InteractionResultHolder<>(InteractionResult.PASS, stack);
             }
 
-            int actuallyStored = receiveExperience(stack, xpToStore, false); //store as much XP as possible
+            if(!world.isClientSide()) {
+                int actuallyStored = receiveExperience(stack, xpToStore, false); //store as much XP as possible
 
-            //negative value removes xp
-            if(actuallyStored > 0) {
-                ExperienceUtils.addPlayerXP(player, -actuallyStored);
-            }
-
-            if(world.isClientSide()) {
+                //negative value removes xp
+                if(actuallyStored > 0) {
+                    ExperienceUtils.addPlayerXP(player, -actuallyStored);
+                }
+            } else {
                 world.playSound(player, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.05F, getPitch(world.getRandom(), stack));
             }
 
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         }
         else if(!player.isShiftKeyDown() && storedXP > 0) {
             int xpForPlayer = ExperienceUtils.getExperienceForLevel(player.experienceLevel + 1) - ExperienceUtils.getPlayerXP(player);
             int xpToRetrieve = (int) (double) xpForPlayer;
-            int actuallyRemoved = extractExperience(stack, xpToRetrieve, false);
 
-            //if the tome had less xp than the player should get, apply the XP loss to that value as well
-            if(actuallyRemoved < xpForPlayer) {
-                xpForPlayer = (int) (double) actuallyRemoved;
-            }
+            if(!world.isClientSide()) {
+                int actuallyRemoved = extractExperience(stack, xpToRetrieve, false);
 
-            ExperienceUtils.addPlayerXP(player, xpForPlayer);
+                //if the tome had less xp than the player should get, apply the XP loss to that value as well
+                if(actuallyRemoved < xpForPlayer) {
+                    xpForPlayer = (int) (double) actuallyRemoved;
+                }
 
-            if(world.isClientSide()) {
+                ExperienceUtils.addPlayerXP(player, xpForPlayer);
+            } else {
                 world.playSound(player, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.05F, getPitch(world.getRandom(), stack));
             }
-            return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         }
         return new InteractionResultHolder<>(InteractionResult.PASS, stack);
     }
