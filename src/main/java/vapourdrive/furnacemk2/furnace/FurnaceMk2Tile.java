@@ -94,14 +94,22 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile implements MenuProv
                 furnaceData.set(FurnaceData.Data.COOK_MAX, FurnaceUtils.getCookTime(level, ingredient));
             }
 
-            if (MachineUtils.pushOutput(currentResult, true, this) >= 1 && furnaceData.get(FurnaceData.Data.FUEL) >= furnaceData.get(FurnaceData.Data.COOK_MAX)) {
+            if (MachineUtils.pushOutput(currentResult, true, this) >= 1 && furnaceData.get(FurnaceData.Data.FUEL) > 0) {
                 assert level != null;
                 level.setBlock(worldPosition, state.setValue(BlockStateProperties.LIT, true), Block.UPDATE_ALL);
                 this.setChanged();
                 progressCook();
             }
-        } else if (furnaceData.get(FurnaceData.Data.COOK_PROGRESS) >= 0) {
-            progressCook();
+        } else if (furnaceData.get(FurnaceData.Data.COOK_PROGRESS) > 0) {
+            if (furnaceData.get(FurnaceData.Data.FUEL) <= 0) {
+                assert level != null;
+                if (state.getValue(BlockStateProperties.LIT)) {
+                    level.setBlock(worldPosition, state.setValue(BlockStateProperties.LIT, false), Block.UPDATE_ALL);
+                    this.setChanged();
+                }
+            } else {
+                progressCook();
+            }
             if (furnaceData.get(FurnaceData.Data.COOK_PROGRESS) >= furnaceData.get(FurnaceData.Data.COOK_MAX)) {
                 if (MachineUtils.pushOutput(currentResult, false, this) == -1) {
                     FurnaceMk2.debugLog("experience push");
@@ -118,7 +126,7 @@ public class FurnaceMk2Tile extends AbstractBaseFuelUserTile implements MenuProv
                         currentResult = ItemStack.EMPTY;
                         furnaceData.set(FurnaceData.Data.COOK_MAX, 0);
                     }
-                    if(remainingIngredient.isEmpty() || furnaceData.get(FurnaceData.Data.FUEL) < furnaceData.get(FurnaceData.Data.COOK_MAX)) {
+                    if(remainingIngredient.isEmpty() || furnaceData.get(FurnaceData.Data.FUEL) <= 0) {
                         assert level != null;
                         level.setBlock(worldPosition, state.setValue(BlockStateProperties.LIT, false), Block.UPDATE_ALL);
                         this.setChanged();

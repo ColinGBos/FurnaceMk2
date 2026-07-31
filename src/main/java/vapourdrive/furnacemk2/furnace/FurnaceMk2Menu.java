@@ -74,17 +74,15 @@ public class FurnaceMk2Menu extends AbstractBaseMachineMenu {
             itemstack = stack.copy();
 
             //Furnace outputs to Inventory
-            if (index >= 41 && index <= 45) {
-                FurnaceMk2.debugLog("From furnace output");
-                if (!this.moveItemStackTo(stack, 0, 36, false)) {
+            if (index >= 41 && index <= 44) {
+                if (!this.moveItemStackTo(stack, 0, 36, true)) {
                     return ItemStack.EMPTY;
                 }
                 slot.onQuickCraft(stack, itemstack);
             }
 
             //Non-output slots to Inventory
-            if (index >= 36 && index <= 40) {
-                FurnaceMk2.debugLog("From furnace non-output");
+            else if (index >= 36 && index <= 45) {
                 if (!this.moveItemStackTo(stack, 0, 36, false)) {
                     return ItemStack.EMPTY;
                 }
@@ -92,45 +90,37 @@ public class FurnaceMk2Menu extends AbstractBaseMachineMenu {
 
             //Player Inventory
             else if (index <= 35) {
-                //Inventory to fuel
-                if (stack.getBurnTime(RecipeType.SMELTING) > 0.0) {
-                    if (!this.moveItemStackTo(stack, 39, 40, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                }
-                //Inventory to smelt slot
-                if (FurnaceUtils.canSmelt(stack, this.world)) {
-                    FurnaceMk2.debugLog("From Player inventory to smelt slot");
-                    if (!this.moveItemStackTo(stack, 40, 41, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                }
-                //Inventory to augment
+                boolean moved = false;
                 if (stack.getItem() == Registration.INSULATION_CORE_ITEM.get() || stack.getItem() == Registration.THERMAL_CORE_ITEM.get() || stack.getItem() == Registration.EXPERIENCE_CORE_ITEM.get()) {
-                    if (!this.moveItemStackTo(stack, 36, 39, false)) {
-                        return ItemStack.EMPTY;
+                    if (this.moveItemStackTo(stack, 36, 39, false)) {
+                        moved = true;
                     }
-                }
-                //Inventory to experience slot
-                if (stack.getItem() instanceof IExperienceStorage) {
-                    FurnaceMk2.debugLog("From Player inventory to experience slot");
-                    if (!this.moveItemStackTo(stack, 45, 46, false)) {
-                        return ItemStack.EMPTY;
+                } else if (stack.getItem() instanceof IExperienceStorage) {
+                    if (this.moveItemStackTo(stack, 45, 46, false)) {
+                        moved = true;
+                    }
+                } else {
+                    if (stack.getBurnTime(RecipeType.SMELTING) > 0.0) {
+                        if (this.moveItemStackTo(stack, 39, 40, false)) {
+                            moved = true;
+                        }
+                    }
+                    if (!stack.isEmpty() && FurnaceUtils.canSmelt(stack, this.world)) {
+                        if (this.moveItemStackTo(stack, 40, 41, false)) {
+                            moved = true;
+                        }
                     }
                 }
 
-                //Inventory to hotbar
-                if (index <= 26) {
-                    FurnaceMk2.debugLog("From Player inventory to hotbar");
-                    if (!this.moveItemStackTo(stack, 27, 36, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                }
-                //Hotbar to inventory
-                else {
-                    FurnaceMk2.debugLog("From Hotbar to inventory");
-                    if (!this.moveItemStackTo(stack, 0, 27, false)) {
-                        return ItemStack.EMPTY;
+                if (!moved) {
+                    if (index <= 26) {
+                        if (!this.moveItemStackTo(stack, 27, 36, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    } else {
+                        if (!this.moveItemStackTo(stack, 0, 27, false)) {
+                            return ItemStack.EMPTY;
+                        }
                     }
                 }
             }

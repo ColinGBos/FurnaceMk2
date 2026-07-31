@@ -58,9 +58,11 @@ public class FurnaceMk2Block extends AbstractBaseMachineBlock implements EntityB
     public boolean sneakWrenchMachine(Player player, Level level, BlockPos pos) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof FurnaceMk2Tile furnace) {
-            player.giveExperiencePoints(furnace.getCurrentExp()/100);
-            furnace.getFurnaceData().set(FurnaceData.Data.EXPERIENCE, 0);
-            if(level.isClientSide()) {
+            if (!level.isClientSide()) {
+                player.giveExperiencePoints(furnace.getCurrentExp()/100);
+                furnace.getFurnaceData().set(FurnaceData.Data.EXPERIENCE, 0);
+                furnace.setChanged();
+            } else {
                 level.playSound(player, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.05F, 1f);
             }
             return true;
